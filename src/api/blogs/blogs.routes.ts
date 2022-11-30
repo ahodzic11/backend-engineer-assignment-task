@@ -4,6 +4,7 @@ import * as BlogController from './blogs.controller'
 
 const router = Router();
 
-router.get('/', BlogController.findAll)
+router.post('/', BlogController.createPost)
+
 
 export default router;

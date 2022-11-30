@@ -9,6 +9,6 @@ router.get<{}, MessageResponse>('/', (req, res) => {
   res.json();
 });
 
-router.use('/blogs', blogs)
+router.use('/posts', blogs)
 
 export default router;

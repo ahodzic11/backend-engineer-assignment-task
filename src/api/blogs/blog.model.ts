@@ -3,7 +3,7 @@ import zod from 'zod';
 
 import { db } from '../../db';
 
-const Blog = zod.object(
+export const BlogData = zod.object(
     {
         slug: zod.string().min(1),
         title: zod.string().min(1),
@@ -15,6 +15,20 @@ const Blog = zod.object(
     }    
 );
 
+export const Blog = zod.object(
+    {
+        blogPost: BlogData
+    }    
+);
+
+export const MultipleBlogPosts = zod.object(
+    {
+        blogPosts: zod.array(BlogData)
+    }
+)
+
+
 export type Blog = zod.infer<typeof Blog>;
+export type MultipleBlogPosts = zod.infer<typeof MultipleBlogPosts>;
 export type BlogWithId = WithId<Blog>;
 export const Blogs = db.collection<Blog>('blogs');

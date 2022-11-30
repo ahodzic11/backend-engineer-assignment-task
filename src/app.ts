@@ -20,7 +20,7 @@ app.get<{}, MessageResponse>('/', (req, res) => {
   res.json();
 });
 
-app.use('/test', api);
+app.use('/api/', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
