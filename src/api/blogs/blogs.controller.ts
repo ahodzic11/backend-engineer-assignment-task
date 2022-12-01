@@ -1,6 +1,4 @@
 import { Response, Request, NextFunction } from 'express';
-import { InsertOneResult, ObjectId } from 'mongodb';
-import { ZodError } from 'zod';
 import { Blog, Blogs, BlogWithId } from './blog.model';
 import slugify from 'limax';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
@@ -12,6 +10,21 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
         res.json(blogs);
     }catch(error){
         next(error)
+    }
+}
+
+export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res: Response<BlogWithId>, next: NextFunction){
+    try{
+        const result = await Blogs.findOne({
+            "blogPost.slug": req.params.slug,
+        });
+        if(!result){
+            res.status(404);
+            throw new Error(`Blog with id "${req.params.slug}" not found.`);
+        }
+        res.json(result);
+    }catch (error) {
+        next(error);
     }
 }
 
@@ -35,20 +48,7 @@ export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, n
     }
 }
 
-export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res: Response<BlogWithId>, next: NextFunction){
-    try{
-        const result = await Blogs.findOne({
-            "blogPost.slug": req.params.slug,
-        });
-        if(!result){
-            res.status(404);
-            throw new Error(`Blog with id "${req.params.slug}" not found.`);
-        }
-        res.json(result);
-    }catch (error) {
-        next(error);
-    }
-}
+
 
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
@@ -60,8 +60,9 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
                 body: req.body.blogPost.body,
                 tagList: req.body.blogPost.tagList,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),}
-            
+                updatedAt: new Date().toISOString(),
+            },
+            comments: []
         }
         const insertResult = await Blogs.insertOne(newBlog);
         if(!insertResult.acknowledged) throw new Error(`Error inserting a new blog.`);
