@@ -15,6 +15,34 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
     }
 }
 
+export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, next: NextFunction){
+    try{
+        const result = await Blogs.find();
+        let blogs = await result.toArray()
+        const sortedBlogs = blogs.sort(
+            (objA, objB) => new Date(objA.blogPost.createdAt).getTime() - new Date(objB.blogPost.createdAt).getTime()
+        );
+        res.json(sortedBlogs)
+    }catch(error){
+        next(error)
+    }
+}
+
+export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res: Response<BlogWithId>, next: NextFunction){
+    try{
+        const result = await Blogs.findOne({
+            "blogPost.slug": req.params.slug,
+        });
+        if(!result){
+            res.status(404);
+            throw new Error(`Blog with id "${req.params.slug}" not found.`);
+        }
+        res.json(result);
+    }catch (error) {
+        next(error);
+    }
+}
+
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
         const newBlog: Blog = {
