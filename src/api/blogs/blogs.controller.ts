@@ -48,8 +48,6 @@ export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, n
     }
 }
 
-
-
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
         const newBlog: Blog = {
@@ -78,6 +76,10 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
 
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
+
+
+
+        
         const result = await Blogs.findOneAndUpdate({
             "blogPost.slug": req.params.slug,
         },{
@@ -85,6 +87,12 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
         }, {
             returnDocument: 'after',
         });
+
+
+
+
+
+
         if(!result.value){
             res.status(404);
             console.log(req.params.slug)

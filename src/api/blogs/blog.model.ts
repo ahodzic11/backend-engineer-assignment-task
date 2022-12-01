@@ -1,7 +1,10 @@
 import { WithId } from 'mongodb';
 import zod from 'zod';
-import { Comment } from './comment.model'
+import { Comment, SingleCommentData,  } from './comment.model'
 import { db } from '../../db';
+
+
+
 
 export const BlogData = zod.object(
     {
@@ -18,7 +21,7 @@ export const BlogData = zod.object(
 export const Blog = zod.object(
     {
         blogPost: BlogData,
-        comments: zod.array(Comment)
+        comments: zod.array(SingleCommentData)
     }    
 );
 
@@ -27,7 +30,6 @@ export const MultipleBlogPosts = zod.object(
         blogPosts: zod.array(BlogData)
     }
 )
-
 
 export type Blog = zod.infer<typeof Blog>;
 export type MultipleBlogPosts = zod.infer<typeof MultipleBlogPosts>;

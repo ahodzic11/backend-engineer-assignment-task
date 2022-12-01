@@ -30,6 +30,15 @@ export const CommentRequestBody = zod.object(
     }    
 );
 
+export const MultipleComments = zod.object(
+    {
+        comments: zod.array(SingleCommentData)
+    }    
+);
+
 
 export type Comment = zod.infer<typeof Comment>;
 export type CommentRequestBody = zod.infer<typeof CommentRequestBody>;
+export type SingleCommentData = zod.infer<typeof SingleCommentData>;
+export type MultipleComments = zod.infer<typeof MultipleComments>;
+export type CommentWithId = WithId<Comment>;

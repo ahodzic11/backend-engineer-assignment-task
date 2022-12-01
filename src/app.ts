@@ -2,15 +2,40 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
-
 import * as middlewares from './middlewares';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
+import swaggerUI from 'swagger-ui-express'
+import swaggerJSDoc from 'swagger-jsdoc';
+import router from './api/blogs/blogs.routes'
+
 
 require('dotenv').config();
 
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Blog Posts API",
+      version: "1.0.0",
+      description: "Backend engineer asignment task"
+    },
+    components: {
+      
+    },
+    servers: [
+      {
+        url: "http://localhost:5000"
+      }
+    ],
+  },
+  apis: ["./api/blogs/blogs.routes.ts"]
+}
+const specs = swaggerJSDoc(options)
+
 const app = express();
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
@@ -24,5 +49,11 @@ app.use('/api/', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
+
+
+const port = 5000;
+app.listen(port, () => {
+  console.log(`Listening: http://localhost:${port}`);
+});
 
 export default app;
