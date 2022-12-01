@@ -17,12 +17,19 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
 
 export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, next: NextFunction){
     try{
+        const tag = req.query.tag as string
         const result = await Blogs.find();
         let blogs = await result.toArray()
-        const sortedBlogs = blogs.sort(
+        let sortedBlogs = blogs.sort(
             (objA, objB) => new Date(objA.blogPost.createdAt).getTime() - new Date(objB.blogPost.createdAt).getTime()
         );
-        res.json(sortedBlogs)
+        let filteredBlogs: BlogWithId[] = []
+        sortedBlogs.forEach(blog => {
+            if(blog.blogPost.tagList.includes(tag))
+                filteredBlogs.push(blog)
+        });
+        console.log(tag)
+        res.json(filteredBlogs)
     }catch(error){
         next(error)
     }
