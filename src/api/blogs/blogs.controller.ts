@@ -36,6 +36,7 @@ export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, n
         let sortedBlogs = blogs.sort(
             (objA, objB) => new Date(objA.blogPost.createdAt).getTime() - new Date(objB.blogPost.createdAt).getTime()
         );
+        if(!req.query.tag) res.json(sortedBlogs)
         let filteredBlogs: BlogWithId[] = []
         sortedBlogs.forEach(blog => {
             if(blog.blogPost.tagList.includes(tag))
@@ -50,17 +51,28 @@ export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, n
 
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
+        // Checking to see whether a blog with the same slug already exists in the database
+        const alreadyExistingBLog = await Blogs.findOne({
+            "blogPost.slug": slugify(req.body.blogPost.title),
+        });
+        if(alreadyExistingBLog){
+            res.status(404);
+            throw new Error(`Blog with slug "${slugify(req.body.blogPost.title)}" already exists.`);
+        }
+
+        let tagList: string[] = []
+        if(req.body.blogPost.tagList)
+            tagList = req.body.blogPost.tagList
         const newBlog: Blog = {
             blogPost: {
                 slug: slugify(req.body.blogPost.title),
                 title: req.body.blogPost.title,
                 description: req.body.blogPost.description,
                 body: req.body.blogPost.body,
-                tagList: req.body.blogPost.tagList,
+                tagList: tagList,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-            },
-            comments: []
+            }
         }
         const insertResult = await Blogs.insertOne(newBlog);
         if(!insertResult.acknowledged) throw new Error(`Error inserting a new blog.`);
@@ -76,10 +88,6 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
 
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
-
-
-
-        
         const result = await Blogs.findOneAndUpdate({
             "blogPost.slug": req.params.slug,
         },{
@@ -87,12 +95,7 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
         }, {
             returnDocument: 'after',
         });
-
-
-
-
-
-
+        
         if(!result.value){
             res.status(404);
             console.log(req.params.slug)

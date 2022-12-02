@@ -20,8 +20,7 @@ export const BlogData = zod.object(
 
 export const Blog = zod.object(
     {
-        blogPost: BlogData,
-        comments: zod.array(SingleCommentData)
+        blogPost: BlogData
     }    
 );
 
