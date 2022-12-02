@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { Blog, Blogs, BlogWithId } from './blog.model';
+import { Blog, Blogs, BlogWithId,  MultipleBlogPosts } from './blog.model';
 import slugify from 'limax';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
 
@@ -28,22 +28,41 @@ export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res
     }
 }
 
-export async function listBlogPosts(req: Request, res: Response<BlogWithId[]>, next: NextFunction){
+export async function listBlogPosts(req: Request, res: Response<MultipleBlogPosts>, next: NextFunction){
     try{
-        const tag = req.query.tag as string
+        const tag = req.query.tag as string;
         const result = await Blogs.find();
-        let blogs = await result.toArray()
-        let sortedBlogs = blogs.sort(
-            (objA, objB) => new Date(objA.blogPost.createdAt).getTime() - new Date(objB.blogPost.createdAt).getTime()
-        );
-        if(!req.query.tag) res.json(sortedBlogs)
+        let blogs = await result.toArray();
+
+        let multipleBlogPosts: MultipleBlogPosts = {
+            blogPosts: [],
+            postsCount: blogs.length
+        }
+
         let filteredBlogs: BlogWithId[] = []
-        sortedBlogs.forEach(blog => {
+        if(req.query.tag){
+            
+            blogs.forEach(blog => {
             if(blog.blogPost.tagList.includes(tag))
                 filteredBlogs.push(blog)
-        });
+            });
+        }else{
+            filteredBlogs = blogs
+        }
+        
+
+        let sortedBlogs = filteredBlogs.sort(
+            (objA, objB) => new Date(objA.blogPost.createdAt).getTime() - new Date(objB.blogPost.createdAt).getTime()
+        );
+        
+        sortedBlogs.forEach(blog => {
+            multipleBlogPosts.blogPosts.push(blog.blogPost)
+        })
+        
+        multipleBlogPosts.postsCount=sortedBlogs.length
+
         console.log(tag)
-        res.json(filteredBlogs)
+        res.json(multipleBlogPosts)
     }catch(error){
         next(error)
     }

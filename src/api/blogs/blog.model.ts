@@ -26,7 +26,8 @@ export const Blog = zod.object(
 
 export const MultipleBlogPosts = zod.object(
     {
-        blogPosts: zod.array(BlogData)
+        blogPosts: zod.array(BlogData),
+        postsCount: zod.number()
     }
 )
 
