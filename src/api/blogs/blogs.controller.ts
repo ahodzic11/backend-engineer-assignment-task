@@ -107,19 +107,8 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
 
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
-        let newTitle: String = ""
-        let newDescription: String = ""
-        let newBody: String = ""
-        if(req.body.blogPost.title){
-            newTitle = req.body.blogPost.title
-        }
-       // console.log(req.body.blogPost.)
-        /*const updatedBlog: Blog = {
-            blogPost: {
-                slug: ""
-            }
-        }
-*/
+
+        // Fetching previous blog data if it exists
         const previousBlog = await Blogs.findOne({"blogPost.slug" : req.params.slug})
 
         if(!previousBlog){
@@ -127,24 +116,33 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
             throw new Error(`Blog with slug "${req.params.slug}" not found.`);
         }
 
+        let newTitle: string = previousBlog?.blogPost.title
+        let newBody: string = previousBlog?.blogPost.body
+        let newDescription: string = previousBlog?.blogPost.description
+
+        // Checking if certain fields were passed as parameters
+        if(req.body.blogPost.body)
+            newBody = req.body.blogPost.body
+        if(req.body.blogPost.description)
+            newDescription = req.body.blogPost.description
+        if(req.body.blogPost.title)
+            newTitle = req.body.blogPost.title
+
+        // Updating fields 
         const result = await Blogs.findOneAndUpdate({
             "blogPost.slug": req.params.slug,
         },{
             $set: {
-                "blogPost.title" : req.body.blogPost.title,
-                "blogPost.description": req.body.blogPost.description,
-                "blogPost.body": req.body.blogPost.body,
-                "blogPost.slug": slugify(req.body.blogPost.title)
+                "blogPost.slug": slugify(newTitle),
+                "blogPost.title" : newTitle,
+                "blogPost.description": newDescription,
+                "blogPost.body": newBody
         },
         }, {
             returnDocument: 'after',
         });
         
-        if(!result.value){
-            res.status(404);
-            console.log(req.params.slug)
-            throw new Error(`Blog with slug "${req.params.slug}" not found.`);
-        }
+        if(result.value)
         res.json(result.value);
     }catch(error){
         next(error);
