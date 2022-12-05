@@ -107,10 +107,35 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
 
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
+        let newTitle: String = ""
+        let newDescription: String = ""
+        let newBody: String = ""
+        if(req.body.blogPost.title){
+            newTitle = req.body.blogPost.title
+        }
+       // console.log(req.body.blogPost.)
+        /*const updatedBlog: Blog = {
+            blogPost: {
+                slug: ""
+            }
+        }
+*/
+        const previousBlog = await Blogs.findOne({"blogPost.slug" : req.params.slug})
+
+        if(!previousBlog){
+            res.status(404);
+            throw new Error(`Blog with slug "${req.params.slug}" not found.`);
+        }
+
         const result = await Blogs.findOneAndUpdate({
             "blogPost.slug": req.params.slug,
         },{
-            $set: req.body,
+            $set: {
+                "blogPost.title" : req.body.blogPost.title,
+                "blogPost.description": req.body.blogPost.description,
+                "blogPost.body": req.body.blogPost.body,
+                "blogPost.slug": slugify(req.body.blogPost.title)
+        },
         }, {
             returnDocument: 'after',
         });
@@ -118,7 +143,7 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
         if(!result.value){
             res.status(404);
             console.log(req.params.slug)
-            throw new Error(`Blog with id "${req.params.slug}" not found.`);
+            throw new Error(`Blog with slug "${req.params.slug}" not found.`);
         }
         res.json(result.value);
     }catch(error){

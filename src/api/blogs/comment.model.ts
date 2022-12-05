@@ -42,3 +42,4 @@ export type CommentRequestBody = zod.infer<typeof CommentRequestBody>;
 export type SingleCommentData = zod.infer<typeof SingleCommentData>;
 export type MultipleComments = zod.infer<typeof MultipleComments>;
 export type CommentWithId = WithId<Comment>;
+export const Comments = db.collection<Comment>('comments');
