@@ -8,6 +8,7 @@ import MessageResponse from './interfaces/MessageResponse';
 import swaggerUI from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc';
 import router from './api/blogs/blogs.routes'
+import seedDB from './api/seeds'
 
 
 require('dotenv').config();
@@ -20,16 +21,13 @@ const options = {
       version: "1.0.0",
       description: "Backend engineer asignment task"
     },
-    components: {
-      
-    },
     servers: [
       {
         url: "http://localhost:5000"
       }
     ],
   },
-  apis: ["./api/blogs/blogs.routes.ts"]
+  apis: ["./src/api/blogs/blog.model.ts", "./src/api/blogs/blogs.controller.ts", "./src/api/blogs/tags.controller.ts"]
 }
 const specs = swaggerJSDoc(options)
 
@@ -53,6 +51,7 @@ app.use(middlewares.errorHandler);
 
 const port = 5000;
 app.listen(port, () => {
+ // seedDB()
   console.log(`Listening: http://localhost:${port}`);
 });
 

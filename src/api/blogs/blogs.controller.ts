@@ -3,6 +3,46 @@ import { Blog, Blogs, BlogWithId,  MultipleBlogPosts } from './blog.model';
 import slugify from 'limax';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Blog:
+ *       type: object
+ *       required:
+ *         - blogPost
+ *       properties:
+ *         blogPost:
+ *           type: object
+ *           required: 
+ *             - slug
+ *             - title
+ *             - description
+ *             - body
+ *             - tagList
+ *             - createdAt
+ *             - updatedAt
+ *           properties:
+ *             slug:
+ *               type: string
+ *             title:
+ *               type: string
+ *             description:
+ *               type: string
+ *             body:
+ *               type: string
+ *             tagList:
+ *               type: array
+ *               items:
+ *                 type: string
+ *             createdAt:
+ *               type: string
+ *             updatedAt:
+ *               type: string
+ */ 
+
+
+
 export async function findAll(req: Request, res: Response<BlogWithId[]>, next: NextFunction){
     try{
         const result = await Blogs.find();
@@ -13,6 +53,30 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
     }
 }
 
+/**
+ * @swagger
+ * /api/posts/{slug}:
+ *   get:
+ *     summary: Get blog post by slug
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         schema: 
+ *           type: string
+ *         required: true
+ *         description: The blog post slug
+ *     responses:
+ *       200:
+ *         description: The blog post description by slug
+ *         contents:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       404:
+ *         description: The blog post was not found
+ */
+
 export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res: Response<BlogWithId>, next: NextFunction){
     try{
         const result = await Blogs.findOne({
@@ -20,13 +84,35 @@ export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res
         });
         if(!result){
             res.status(404);
-            throw new Error(`Blog with id "${req.params.slug}" not found.`);
+            throw new Error(`Blog with slug ${req.params.slug} not found.`);
         }
         res.json(result);
     }catch (error) {
         next(error);
     }
 }
+
+/**
+ * @swagger
+ * tags:
+ *   name: Blogs
+ *   description: Blogs in the API
+ */
+
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     summary: Returns the list of all the blog posts
+ *     tags: [Blogs]
+ *     responses:
+ *       200: 
+ *         description: The list of the blog posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: $ref:'#/components/schemas/Blog'
+ */
 
 export async function listBlogPosts(req: Request, res: Response<MultipleBlogPosts>, next: NextFunction){
     try{
