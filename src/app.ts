@@ -21,13 +21,8 @@ const options = {
       version: "1.0.0",
       description: "Backend engineer asignment task"
     },
-    servers: [
-      {
-        url: "http://localhost:5000"
-      }
-    ],
   },
-  apis: ["./src/api/blogs/blog.model.ts", "./src/api/blogs/blogs.controller.ts", "./src/api/blogs/tags.controller.ts"]
+  apis: ["./src/api/blogs/blog.model.ts", "./src/api/blogs/blogs.controller.ts", "./src/api/blogs/tags.controller.ts", "./src/api/blogs/comments.controller.ts"]
 }
 const specs = swaggerJSDoc(options)
 

@@ -68,7 +68,7 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
  *         description: The blog post slug
  *     responses:
  *       200:
- *         description: The blog post description by slug
+ *         description: The blog post was found
  *         contents:
  *           application/json:
  *             schema:
@@ -154,6 +154,48 @@ export async function listBlogPosts(req: Request, res: Response<MultipleBlogPost
     }
 }
 
+/**
+ * @swagger
+ * /api/posts:
+ *   post:
+ *     summary: Create a new blog post
+ *     tags: [Blogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - blogPost
+ *             properties:
+ *               blogPost: 
+ *                 type: object
+ *                 required: 
+ *                   - title
+ *                   - description
+ *                   - body
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   body:
+ *                     type: string
+ *                   tagList:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *     responses:
+ *       200:
+ *         description: The blog post was successfully created
+ *         contents:
+ *           application/json:
+ *             schema: $ref:'#/components/schemas/Blog'
+ *       404:
+ *         description: The blog post was not created
+ */
+
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
         // Checking to see whether a blog with the same slug already exists in the database
@@ -190,6 +232,49 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
         next(error)
     }
 }
+
+/**
+ * @swagger
+ * /api/posts/{slug}:
+ *   put:
+ *     summary: Update a blog post by slug 
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The blog post slug
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - blogPost
+ *             properties:
+ *               blogPost: 
+ *                 type: object
+ *                 required: 
+ *                   - title
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   body:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: The blog post was successfully updated
+ *         contents:
+ *           application/json:
+ *             schema: $ref:'#/components/schemas/Blog'
+ *       404:
+ *         description: The blog post update failed
+ */
 
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
@@ -235,6 +320,26 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
     }
 }
 
+/**
+ * @swagger
+ * /api/posts/{slug}:
+ *   delete:
+ *     summary: Delete blog post by slug
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         schema: 
+ *           type: string
+ *         required: true
+ *         description: The blog post slug
+ *     responses:
+ *       200:
+ *         description: The blog post was deleted
+ *       404:
+ *         description: The blog post was not deleted
+ */
+
 export async function deleteBlog(req: Request<ParamsWithSlug, {}, {}>, res: Response<{}>, next:NextFunction){
     try{
         const result = await Blogs.findOneAndDelete({
@@ -244,7 +349,7 @@ export async function deleteBlog(req: Request<ParamsWithSlug, {}, {}>, res: Resp
             res.status(404);
             throw new Error(`Blog with id "${req.params.slug}" not found.`)
         }
-        res.status(204).end();
+        res.status(200).end()
     } catch (error) {
         next(error);
     }
