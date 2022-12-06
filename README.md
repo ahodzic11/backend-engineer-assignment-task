@@ -9,5 +9,9 @@ To see the data inside the database, you can install MongoDB Compass. It is offe
 
 If you have MongoDB Compass installed, you can connect to the local database to check the data inside it at any given moment.
 
-To access the API, Swagger is used and is available at http://localhost:5000/api-docs.
 
+After cloning the repository, open a terminal and write 'npm install' to install the missing packages if some of them weren't saved.
+
+'npm run dev' will then start the application.
+
+To access the API, Swagger is used and is available at http://localhost:5000/api-docs.
