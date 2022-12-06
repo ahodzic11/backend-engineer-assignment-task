@@ -10,7 +10,7 @@ To see the data inside the database, you can install MongoDB Compass. It is offe
 If you have MongoDB Compass installed, you can connect to the local database to check the data inside it at any given moment.
 
 
-After cloning the repository, open a terminal and write 'npm install' to install the missing packages if some of them weren't saved.
+After cloning the repository, open a terminal and write 'npm install' to install the missing packages, in case some are missing.
 
 'npm run dev' will then start the application.
 
