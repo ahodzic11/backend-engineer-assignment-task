@@ -17,9 +17,8 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Blog Posts API",
-      version: "1.0.0",
-      description: "Backend engineer asignment task"
+      title: "Blog Platform API",
+      version: "1.0.0"
     },
   },
   apis: ["./src/api/blogs/blog.model.ts", "./src/api/blogs/blogs.controller.ts", "./src/api/blogs/tags.controller.ts", "./src/api/blogs/comments.controller.ts"]

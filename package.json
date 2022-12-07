@@ -18,6 +18,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "babel-jest": "^29.3.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -30,6 +31,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^28.1.8",

@@ -1,8 +1,6 @@
 import { WithId } from 'mongodb';
 import zod from 'zod';
 
-import { db } from '../../db';
-
 export const SingleCommentData = zod.object(
     {
         id: zod.number(),
@@ -42,4 +40,3 @@ export type CommentRequestBody = zod.infer<typeof CommentRequestBody>;
 export type SingleCommentData = zod.infer<typeof SingleCommentData>;
 export type MultipleComments = zod.infer<typeof MultipleComments>;
 export type CommentWithId = WithId<Comment>;
-export const Comments = db.collection<Comment>('comments');

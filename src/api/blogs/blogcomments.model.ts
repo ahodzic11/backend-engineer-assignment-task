@@ -12,4 +12,4 @@ export const BlogComment = zod.object(
 
 export type BlogComment = zod.infer<typeof BlogComment>;
 export type BlogCommentsWithId = WithId<BlogComment>;
-export const BlogCommentsDB = db.collection<BlogComment>('blogComment');
+export const BlogCommentsDB = db.collection<BlogComment>('comments');

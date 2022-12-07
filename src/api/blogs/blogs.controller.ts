@@ -2,6 +2,7 @@ import { Response, Request, NextFunction } from 'express';
 import { Blog, Blogs, BlogWithId,  MultipleBlogPosts } from './blog.model';
 import slugify from 'limax';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
+import { BlogCommentsDB } from './blogcomments.model';
 
 /**
  * @swagger
@@ -307,13 +308,20 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
                 "blogPost.slug": slugify(newTitle),
                 "blogPost.title" : newTitle,
                 "blogPost.description": newDescription,
-                "blogPost.body": newBody
+                "blogPost.body": newBody,
+                "blogPost.updatedAt": new Date().toISOString()
         },
         }, {
             returnDocument: 'after',
         });
-        
-        if(result.value)
+        const updateBlogPostComment = await BlogCommentsDB.findOneAndUpdate({
+            "blogSlug": req.params.slug,
+        },{
+            $set: {
+                "blogSlug": slugify(newTitle)
+            }
+        })
+        if(updateBlogPostComment.value && result.value)
         res.json(result.value);
     }catch(error){
         next(error);

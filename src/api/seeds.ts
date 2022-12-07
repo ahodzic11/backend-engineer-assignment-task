@@ -20,8 +20,8 @@ const seedBlogs = [
             "description": "ASP.NET Core Razor pages and ASP.NET Core MVC are both server rendered/server based frameworks.",
             "body": "Both techniques use Razor template engine to create UI/view components and processing logic that runs on the server and servers the html content back.",
             "tagList": [".NET", ".NETCore", "ASP.NET", "C#"],
-            "createdAt": "2018-05-18T03:22:56.637Z",
-            "updatedAt": "2018-05-18T03:48:35.824Z"
+            "createdAt": "2018-05-19T03:22:56.637Z",
+            "updatedAt": "2018-05-19T03:48:35.824Z"
             }
     },
     {
@@ -31,8 +31,8 @@ const seedBlogs = [
             "description": "Docker is one of the leading providers of containerization tools and technology platform.",
             "body": "Docker helps software developers to easily build, run and manage containerized applications/software, especially in a cloud environment.",
             "tagList": ["Containerization", "DevOps"],
-            "createdAt": "2018-05-18T03:22:56.637Z",
-            "updatedAt": "2018-05-18T03:48:35.824Z"
+            "createdAt": "2018-05-20T03:22:56.637Z",
+            "updatedAt": "2018-05-20T03:48:35.824Z"
             }
     }    
 ]

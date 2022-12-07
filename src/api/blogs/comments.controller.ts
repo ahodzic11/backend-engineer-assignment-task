@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { Comment, CommentRequestBody, Comments, CommentWithId, MultipleComments } from './comment.model';
+import { Comment, CommentRequestBody, CommentWithId, MultipleComments } from './comment.model';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
 import { BlogComment, BlogCommentsDB } from './blogcomments.model';
 import { Blog, Blogs } from './blog.model';
@@ -78,7 +78,7 @@ import { ParamsWithSlugAndID } from '../../interfaces/ParamsWithSlugAndID';
  *         description: The blog post comment was not created
  */
 
-export async function addComment(req: Request<ParamsWithSlug, CommentWithId, CommentRequestBody>, res: Response<CommentWithId>, next: NextFunction){    
+export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRequestBody>, res: Response<Comment>, next: NextFunction){    
     try{
         
         //check to see whether the blog exists and can be commented on
@@ -131,14 +131,9 @@ export async function addComment(req: Request<ParamsWithSlug, CommentWithId, Com
                 res.status(404);
                 throw new Error(`Error adding comment with id "${newComment.comment.id}" to BlogSlug ${req.params.slug}`);
             }
+            res.status(201);
+            res.json(newComment)
         }
-        const insertResult = await Comments.insertOne(newComment);
-        if(!insertResult.acknowledged) throw new Error(`Error inserting a new comment.`);
-        res.status(201);
-        res.json({
-        _id: insertResult.insertedId,
-        ...newComment,})
-        
         
     }catch(error){
         next(error);
