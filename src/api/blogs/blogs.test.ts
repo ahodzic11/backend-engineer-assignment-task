@@ -1,9 +1,8 @@
 import request from 'supertest'
 
 import app from '../../app'
-import { client, db } from '../../db';
-import { Blog, Blogs } from './blog.model'
-import { BlogCommentsDB } from './blogcomments.model';
+import { client } from '../../db';
+import { Blogs } from './blog.model'
 
 beforeAll(async () => {
     try{

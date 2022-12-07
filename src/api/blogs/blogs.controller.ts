@@ -43,7 +43,7 @@ import { BlogCommentsDB } from './blogcomments.model';
  */ 
 
 
-
+// Returns all blog posts
 export async function findAll(req: Request, res: Response<BlogWithId[]>, next: NextFunction){
     try{
         const result = await Blogs.find();
@@ -78,6 +78,7 @@ export async function findAll(req: Request, res: Response<BlogWithId[]>, next: N
  *         description: The blog post was not found
  */
 
+// Returns a blog by slug
 export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res: Response<BlogWithId>, next: NextFunction){
     try{
         const result = await Blogs.findOne({
@@ -115,6 +116,7 @@ export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res
  *               type: $ref:'#/components/schemas/Blog'
  */
 
+// Returns a list of blogs sorted by date and time, filtered if a tag query parameter is present
 export async function listBlogPosts(req: Request, res: Response<MultipleBlogPosts>, next: NextFunction){
     try{
         const tag = req.query.tag as string;
@@ -128,14 +130,12 @@ export async function listBlogPosts(req: Request, res: Response<MultipleBlogPost
 
         let filteredBlogs: BlogWithId[] = []
         if(req.query.tag){
-            
             blogs.forEach(blog => {
             if(blog.blogPost.tagList.includes(tag))
                 filteredBlogs.push(blog)
             });
-        }else{
+        }else
             filteredBlogs = blogs
-        }
         
 
         let sortedBlogs = filteredBlogs.sort(
@@ -148,7 +148,6 @@ export async function listBlogPosts(req: Request, res: Response<MultipleBlogPost
         
         multipleBlogPosts.postsCount=sortedBlogs.length
 
-        console.log(tag)
         res.json(multipleBlogPosts)
     }catch(error){
         next(error)
@@ -197,20 +196,24 @@ export async function listBlogPosts(req: Request, res: Response<MultipleBlogPost
  *         description: The blog post was not created
  */
 
+
+// Creates and returns a new blog based on passed body request
 export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
         // Checking to see whether a blog with the same slug already exists in the database
-        const alreadyExistingBLog = await Blogs.findOne({
+        const alreadyExistingBlog = await Blogs.findOne({
             "blogPost.slug": slugify(req.body.blogPost.title),
         });
-        if(alreadyExistingBLog){
+        if(alreadyExistingBlog){
             res.status(404);
             throw new Error(`Blog with slug "${slugify(req.body.blogPost.title)}" already exists.`);
         }
 
+        // Setting taglist if it was passed as a parameter
         let tagList: string[] = []
         if(req.body.blogPost.tagList)
             tagList = req.body.blogPost.tagList
+
         const newBlog: Blog = {
             blogPost: {
                 slug: slugify(req.body.blogPost.title),
@@ -222,6 +225,7 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
                 updatedAt: new Date().toISOString(),
             }
         }
+
         const insertResult = await Blogs.insertOne(newBlog);
         if(!insertResult.acknowledged) throw new Error(`Error inserting a new blog.`);
         res.status(201);
@@ -277,6 +281,7 @@ export async function createBlog(req: Request<{}, BlogWithId, Blog>, res: Respon
  *         description: The blog post update failed
  */
 
+// Updates blog post based on passed body request
 export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>, res: Response<BlogWithId>, next: NextFunction){
     try{
 
@@ -322,7 +327,7 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
             }
         })
         if(updateBlogPostComment.value && result.value)
-        res.json(result.value);
+            res.json(result.value);
     }catch(error){
         next(error);
     }
@@ -348,6 +353,7 @@ export async function updateBlog(req: Request<ParamsWithSlug, BlogWithId, Blog>,
  *         description: The blog post was not deleted
  */
 
+// Deletes blog based on passed slug
 export async function deleteBlog(req: Request<ParamsWithSlug, {}, {}>, res: Response<{}>, next:NextFunction){
     try{
         const result = await Blogs.findOneAndDelete({

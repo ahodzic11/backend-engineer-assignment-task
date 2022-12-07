@@ -1,9 +1,6 @@
 import { Router } from 'express';
 import * as BlogController from './blogs.controller'
 
-
-
-
 const router = Router();
 
 router.get('/:slug', BlogController.findBlog)

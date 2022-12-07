@@ -40,6 +40,7 @@ import { Tags } from './tags.model';
  *               type: $ref:'#/components/schemas/Tag'
  */
 
+// Returns a list of all the tags
 export async function getTags(req: Request, res: Response<Tags>, next: NextFunction){
     try{
         const result = await Blogs.find();

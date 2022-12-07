@@ -1,8 +1,8 @@
 import { Response, Request, NextFunction } from 'express';
-import { Comment, CommentRequestBody, CommentWithId, MultipleComments } from './comment.model';
+import { Comment, CommentRequestBody, MultipleComments } from './comment.model';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
 import { BlogComment, BlogCommentsDB } from './blogcomments.model';
-import { Blog, Blogs } from './blog.model';
+import { Blogs } from './blog.model';
 import { ParamsWithSlugAndID } from '../../interfaces/ParamsWithSlugAndID';
 
 /**
@@ -78,10 +78,11 @@ import { ParamsWithSlugAndID } from '../../interfaces/ParamsWithSlugAndID';
  *         description: The blog post comment was not created
  */
 
+// Adds a comment to specific blog post based on passed slug
 export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRequestBody>, res: Response<Comment>, next: NextFunction){    
     try{
         
-        //check to see whether the blog exists and can be commented on
+        // Checking to see whether the blog exists and can be commented on
         const resultBlog = await Blogs.findOne({
             "blogPost.slug": req.params.slug
         });
@@ -89,7 +90,7 @@ export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRe
             res.status(404);
             throw new Error(`Blog with slug "${req.params.slug}" not found.`);
         }
-        //check to see if there is a blog comment already in the database
+        // Checking to see if there is a blog comment already in the database
         const result = await BlogCommentsDB.findOne({
             "blogSlug": req.params.slug
         });
@@ -112,13 +113,8 @@ export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRe
 
         }else{
             // blogComment is in the database
-            console.log("Naslo već jedan takav komentar")
             let newCommentId = Number(result.comments.length + 1)
             newComment.comment.id = newCommentId
-            console.log("Ovo je komentar")
-            console.log(newComment)
-            console.log("Ovo je req.params.slug")
-            console.log(req.params.slug)
             const adding = await BlogCommentsDB.findOneAndUpdate({
                 "blogSlug": req.params.slug,
             },{
@@ -126,7 +122,6 @@ export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRe
             }, {
                 returnDocument: 'after',
             });
-            console.log(adding)
             if(!adding){
                 res.status(404);
                 throw new Error(`Error adding comment with id "${newComment.comment.id}" to BlogSlug ${req.params.slug}`);
@@ -163,9 +158,10 @@ export async function addComment(req: Request<ParamsWithSlug, Comment, CommentRe
  *               type: $ref:'#/components/schemas/Comment'
  */
 
+// Gets comments from a blog post based on passed slug
 export async function getComments(req: Request<ParamsWithSlug, MultipleComments, {}>, res: Response<MultipleComments>, next: NextFunction){
     try{
-        // checking to see if there's a blogComment
+        // Checking to see if there's a blogComment
         const result = await BlogCommentsDB.findOne({
             "blogSlug": req.params.slug,
         });
@@ -211,6 +207,7 @@ export async function getComments(req: Request<ParamsWithSlug, MultipleComments,
  *         description: The blog post was not deleted
  */
 
+// Deletes a comment from a blog post by it's ID
 export async function deleteComment(req: Request<ParamsWithSlugAndID, {}, {}>, res: Response<{}>, next:NextFunction){
     try{
         let commentId: Number = Number(req.params.id)
@@ -222,11 +219,9 @@ export async function deleteComment(req: Request<ParamsWithSlugAndID, {}, {}>, r
         }, {
             returnDocument: 'after',
         });
-        console.log(commentId)
 
         if(!result.value){
             res.status(404);
-            console.log(req.params.slug)
             throw new Error(`Blog with slug "${req.params.slug}" not found.`);
         }
         res.json(200);

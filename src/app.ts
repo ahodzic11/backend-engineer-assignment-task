@@ -7,7 +7,6 @@ import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
 import swaggerUI from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc';
-import router from './api/blogs/blogs.routes'
 import seedDB from './api/seeds'
 
 

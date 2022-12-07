@@ -1,4 +1,3 @@
-import { client } from "../db"
 import { Blogs } from "./blogs/blog.model"
 import { BlogCommentsDB } from "./blogs/blogcomments.model"
 

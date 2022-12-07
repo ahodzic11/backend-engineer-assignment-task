@@ -1,7 +1,4 @@
-import { WithId } from 'mongodb';
 import zod from 'zod';
-
-import { db } from '../../db';
 
 export const Tags = zod.object(
     {
