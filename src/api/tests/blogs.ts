@@ -2,7 +2,7 @@ import request from 'supertest'
 
 import app from '../../app'
 import { client } from '../../db';
-import { Blogs } from './blog.model'
+import { Blogs } from '../models/blog'
 
 beforeAll(async () => {
     try{

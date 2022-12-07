@@ -20,7 +20,7 @@ const options = {
       version: "1.0.0"
     },
   },
-  apis: ["./src/api/blogs/blog.model.ts", "./src/api/blogs/blogs.controller.ts", "./src/api/blogs/tags.controller.ts", "./src/api/blogs/comments.controller.ts"]
+  apis: ["./src/api/models/blog.ts", "./src/api/controllers/blogs.ts", "./src/api/controllers/tags.ts", "./src/api/controllers/comments.ts"]
 }
 const specs = swaggerJSDoc(options)
 

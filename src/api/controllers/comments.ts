@@ -1,8 +1,8 @@
 import { Response, Request, NextFunction } from 'express';
-import { Comment, CommentRequestBody, MultipleComments } from './comment.model';
+import { Comment, CommentRequestBody, MultipleComments } from '../models/comment';
 import { ParamsWithSlug } from '../../interfaces/ParamsWithSlug';
-import { BlogComment, BlogCommentsDB } from './blogcomments.model';
-import { Blogs } from './blog.model';
+import { BlogComment, BlogCommentsDB } from '../models/blogcomments';
+import { Blogs } from '../models/blog';
 import { ParamsWithSlugAndID } from '../../interfaces/ParamsWithSlugAndID';
 
 /**

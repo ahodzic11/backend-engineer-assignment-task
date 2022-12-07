@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
-import { Blogs } from './blog.model';
-import { Tags } from './tags.model';
+import { Blogs } from '../models/blog';
+import { Tags } from '../models/tags';
 
 /**
  * @swagger

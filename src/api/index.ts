@@ -1,9 +1,9 @@
 import express from 'express';
 
 import MessageResponse from '../interfaces/MessageResponse';
-import blogs from "./blogs/blogs.routes"
-import tags from "./blogs/tags.routes"
-import comments from "./blogs/comments.routes"
+import blogs from "./routes/blogs"
+import tags from "./routes/tags"
+import comments from "./routes/comments"
 
 const router = express.Router();
 

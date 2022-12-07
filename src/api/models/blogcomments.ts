@@ -1,6 +1,6 @@
 import { WithId } from 'mongodb';
 import zod from 'zod';
-import { SingleCommentData } from './comment.model'
+import { SingleCommentData } from './comment'
 import { db } from '../../db';
 
 export const BlogComment = zod.object(

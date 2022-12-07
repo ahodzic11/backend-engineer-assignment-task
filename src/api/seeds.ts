@@ -1,5 +1,5 @@
-import { Blogs } from "./blogs/blog.model"
-import { BlogCommentsDB } from "./blogs/blogcomments.model"
+import { Blogs } from "./models/blog"
+import { BlogCommentsDB } from "./models/blogcomments"
 
 const seedBlogs = [
     {
