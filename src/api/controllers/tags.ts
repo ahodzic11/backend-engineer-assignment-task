@@ -22,7 +22,6 @@ import { Tags } from '../models/tags';
  * @swagger
  * tags:
  *   name: Tags
- *   description: Tags in the API
  */
 
 /**

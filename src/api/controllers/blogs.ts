@@ -98,7 +98,6 @@ export async function findBlog(req: Request<ParamsWithSlug, BlogWithId, {}>, res
  * @swagger
  * tags:
  *   name: Blogs
- *   description: Blogs in the API
  */
 
 /**

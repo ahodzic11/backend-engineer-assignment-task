@@ -29,13 +29,13 @@ import { ParamsWithSlugAndID } from '../../interfaces/ParamsWithSlugAndID';
  *             updatedAt:
  *               type: string
  *             body:
+ *               type: string
  */ 
 
 /**
  * @swagger
  * tags:
  *   name: Comments
- *   description: Comments in the API
  */
 
 
