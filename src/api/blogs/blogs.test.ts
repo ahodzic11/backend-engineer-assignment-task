@@ -1,18 +1,19 @@
 import request from 'supertest'
 
 import app from '../../app'
+import { client, db } from '../../db';
 import { Blog, Blogs } from './blog.model'
 import { BlogCommentsDB } from './blogcomments.model';
 
 beforeAll(async () => {
     try{
         await Blogs.drop();
-        await BlogCommentsDB.drop();
     }catch (error) {}
 })
 
+
 describe('GET /api/posts', () => {
-    it('Testing list blog posts endpoint', async () => 
+    it('Testing list blog posts endpoint',  async () =>
         request(app)
         .get('/api/posts')
         .set('Accept', 'application/json')
@@ -24,3 +25,8 @@ describe('GET /api/posts', () => {
         })
     )
 })
+
+
+global.afterAll(async () => {
+    await client.close();
+  });

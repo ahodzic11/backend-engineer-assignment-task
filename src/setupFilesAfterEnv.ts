@@ -1,3 +1,4 @@
+import app from './app';
 import { client } from './db';
 
 global.afterAll(async () => {
